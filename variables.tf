@@ -1,10 +1,10 @@
 variable "name" {
-  description = "Name of bastion"
+  description = "Name of instance"
   type        = string
   default     = ""
 }
 variable "public_ip" {
-  description = "Name of bastion"
+  description = "enable for public ip"
   type        = bool
   default     = true
 }
@@ -15,7 +15,7 @@ variable "tags" {
   default     = {}
 }
 variable "subnet" {
-  description = "Zones to launch our instances into"
+  description = "Define subnet"
   type        = string
   default     = ""
 }
@@ -25,22 +25,22 @@ variable "volume_size" {
 }
 
 variable "ami_id" {
-  description = "Name of Launch configuration"
+  description = "Define ami_id"
   type        = string
   default     = ""
 }
 variable "key_name" {
-  description = "Key name of Launch configuration"
+  description = "Key name of Launch instance"
   type        = string
   default     = ""
 }
 variable "instance_type" {
-  description = "Name of Launch configuration"
+  description = "define instance type ex- t2.large"
   type        = string
   default     = ""
 }
 variable "security_groups" {
-  description = "Name of Launch configuration"
+  description = "Define secuity groups"
   type        = list(string)
   default     = []
 }
