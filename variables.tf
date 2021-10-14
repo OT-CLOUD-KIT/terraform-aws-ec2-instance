@@ -1,12 +1,18 @@
+variable "count_ec2_instance" {
+  description = "number of ec2 instance"
+  type        = number
+  default     = 1
+}
+
 variable "name" {
   description = "Name of bastion"
   type        = string
   default     = ""
 }
 variable "public_ip" {
-  description = "Name of bastion"
+  description = "Public Ip "
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "tags" {
@@ -22,6 +28,7 @@ variable "subnet" {
 variable "volume_size" {
   description = "volume size"
   type        = number
+  default     = 8 
 }
 
 variable "ami_id" {
