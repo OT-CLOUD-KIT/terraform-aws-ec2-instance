@@ -1,5 +1,5 @@
 resource "aws_instance" "ec2" {
-  count                       = var.count_ec2_instance 
+  count                       = var.count 
   ami                         = var.ami_id
   instance_type               = var.instance_type
   associate_public_ip_address = var.public_ip

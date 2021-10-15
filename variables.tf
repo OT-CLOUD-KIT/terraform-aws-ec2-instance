@@ -1,4 +1,4 @@
-variable "count_ec2_instance" {
+variable "count" {
   description = "number of ec2 instance"
   type        = number
   default     = 1
