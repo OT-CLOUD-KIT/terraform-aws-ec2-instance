@@ -29,7 +29,7 @@ provider "aws" {
 
 module "instance" {
   source                  = "../ec2Instance"
-  count_ec2_instance      = var.count
+  count                   = var.count
   name                    = "node_1"
   tags                    = local.tags_map
   instance_type           = var.instance_type
