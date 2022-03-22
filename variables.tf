@@ -1,4 +1,4 @@
-variable "count" {
+variable "count_ec2_instance" {
   description = "number of ec2 instance"
   type        = number
   default     = 1
@@ -22,8 +22,7 @@ variable "tags" {
 }
 variable "subnet" {
   description = "Zones to launch our instances into"
-  type        = string
-  default     = ""
+  type        = list(string)
 }
 variable "volume_size" {
   description = "volume size"
@@ -51,4 +50,3 @@ variable "security_groups" {
   type        = list(string)
   default     = []
 }
-
