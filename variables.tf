@@ -4,7 +4,7 @@ variable "count_ec2_instance" {
   default     = 1
 }
 
-variable "name" {
+variable "ec2_name" {
   description = "Name of bastion"
   type        = string
   default     = ""
@@ -28,6 +28,12 @@ variable "volume_size" {
   description = "volume size"
   type        = number
   default     = 8 
+}
+
+variable "volume_type" {
+  description = "volume type"
+  type        = string
+  default     = "gp2"
 }
 
 variable "ami_id" {
