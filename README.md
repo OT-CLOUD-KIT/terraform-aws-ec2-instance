@@ -29,13 +29,14 @@ provider "aws" {
 
 module "instance" {
   source                  = "../ec2Instance"
+  count                   = var.count
   name                    = "node_1"
   tags                    = local.tags_map
   instance_type           = var.instance_type
   key_name                = var.key_name
   volume_size             = var.volume_size
   subnet                  = var.subnet_id
-  security_groups         = var.sg_id
+  security_groups        = var.sg_id
   ami_id                  = var.ami_id
   public_ip               = true 
   
@@ -62,6 +63,7 @@ Inputs
 ------
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| count | Number of ec2 Instance | `Number` | `1` | no |
 | name | The string for name of the instance | `string` | `"false"` | yes |
 | tags | The tags for ec2 instance   | `string` | `"false"` | no |
 | instance_type | You can define the type of instance | `string` | `"false"` | yes |
@@ -70,7 +72,7 @@ Inputs
 | subnet |define subnet to launch ec2 instace to particular subnet | `string` | `"false"` | yes |
 | security_groups |define security group to attach an instace to particular subnet | `list` | `"false"` | yes |
 | ami_id |define ami_id for ec2 instance | `string` | `"false"` | yes |
-| public_ip |define public_ip for ec2 instance | `bool` | `"true"` | no |
+| public_ip |define public_ip for ec2 instance | `bool` | `"false"` | no |
 
 
 Output

@@ -1,12 +1,18 @@
-variable "name" {
+variable "count_ec2_instance" {
+  description = "number of ec2 instance"
+  type        = number
+  default     = 1
+}
+
+variable "ec2_name" {
   description = "Name of bastion"
   type        = string
   default     = ""
 }
 variable "public_ip" {
-  description = "Name of bastion"
+  description = "Public Ip "
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "tags" {
@@ -16,12 +22,18 @@ variable "tags" {
 }
 variable "subnet" {
   description = "Zones to launch our instances into"
-  type        = string
-  default     = ""
+  type        = list(string)
 }
 variable "volume_size" {
   description = "volume size"
   type        = number
+  default     = 8 
+}
+
+variable "volume_type" {
+  description = "volume type"
+  type        = string
+  default     = "gp2"
 }
 
 variable "volume_type" {
@@ -50,4 +62,3 @@ variable "security_groups" {
   type        = list(string)
   default     = []
 }
-
