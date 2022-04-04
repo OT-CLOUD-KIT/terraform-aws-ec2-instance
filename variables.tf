@@ -22,7 +22,6 @@ variable "tags" {
 }
 variable "subnet" {
   description = "Zones to launch our instances into"
-  type        = list(string)
 }
 variable "volume_size" {
   description = "volume size"
@@ -56,10 +55,12 @@ variable "security_groups" {
   type        = list(string)
   default     = []
 }
-variable "lt_iam_arn" {
-  description = "(Optional) The Amazon Resource Name (ARN) of the instance profile for launch template"
-  type = list(object({
-      arn = string
-  }))
-  default = []
+variable "iam_instance_profile_required" {
+  type = bool
+  description = "(optional) describe your variable"
+  default = false
+}
+
+variable "iam_instance_profile" {
+  type = string
 }
