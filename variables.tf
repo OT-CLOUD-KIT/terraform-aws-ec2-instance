@@ -63,4 +63,5 @@ variable "iam_instance_profile_required" {
 
 variable "iam_instance_profile" {
   type = string
+  default = "value"
 }
