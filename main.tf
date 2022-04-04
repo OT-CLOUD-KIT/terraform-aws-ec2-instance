@@ -4,14 +4,9 @@ resource "aws_instance" "ec2" {
   instance_type               = var.instance_type
   associate_public_ip_address = var.public_ip
   key_name                    = var.key_name
-  subnet_id                   = var.subnet[count.index]
+  subnet_id                   = var.subnet
   vpc_security_group_ids      = var.security_groups
-  dynamic "iam_instance_profile" {
-    for_each = var.lt_iam_arn
-    content {
-      arn = iam_instance_profile.value.arn
-    }
-  }
+  iam_instance_profile        = var.iam_instance_profile_required == true ? var.iam_instance_profile : null
   root_block_device {
     volume_size = var.volume_size
     volume_type = var.volume_type
