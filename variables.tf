@@ -56,3 +56,10 @@ variable "security_groups" {
   type        = list(string)
   default     = []
 }
+variable "lt_iam_arn" {
+  description = "(Optional) The Amazon Resource Name (ARN) of the instance profile for launch template"
+  type = list(object({
+      arn = string
+  }))
+  default = []
+}
