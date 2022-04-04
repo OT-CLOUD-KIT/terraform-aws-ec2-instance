@@ -13,7 +13,7 @@ resource "aws_instance" "ec2" {
   }
   tags = merge(
     {
-      Name = format("%s-%d", var.ec2_name,count.index+1)
+      Name = format("%s", var.ec2_name)
     },
     {
       PROVISIONER = "Terraform"
