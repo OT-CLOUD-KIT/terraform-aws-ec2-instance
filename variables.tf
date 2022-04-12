@@ -55,13 +55,14 @@ variable "security_groups" {
   type        = list(string)
   default     = []
 }
-variable "iam_instance_profile_required" {
-  type = bool
-  description = "(optional) describe your variable"
-  default = false
-}
 
 variable "iam_instance_profile" {
   type = string
-  default = "value"
+  default = ""
+}
+
+variable "encrypted_volume" {
+type = bool
+description = "Optional) Whether to enable volume encryption. Defaults to false. Must be configured to perform drift detection."
+default = false
 }
