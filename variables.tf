@@ -51,3 +51,25 @@ variable "security_groups" {
   default     = []
 }
 
+variable "user_data" {
+  type        = list(string)
+  default     = []
+  description = "User data content. Will be ignored if `user_data_base64` is set"
+}
+
+variable "user_data_base64" {
+  type        = string
+  description = "The Base64-encoded user data to provide when launching the instances. If this is set then `user_data` will not be used."
+  default     = ""
+}
+
+variable "ssh_user" {
+  type        = string
+  description = "Default SSH user for this AMI. e.g. `ec2-user` for Amazon Linux and `ubuntu` for Ubuntu systems"
+  default     = "ec2-user"
+}
+
+variable "user_data_template" {
+  type        = string
+  description = "User Data template to use for provisioning EC2 Bastion Host"
+}
