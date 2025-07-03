@@ -5,6 +5,7 @@ A Terraform module to create AWS EC2 instances with customizable configuration i
 ---
 
 ## Architecture
+![Screenshot from 2025-07-04 00-11-31](https://github.com/user-attachments/assets/8da01434-616a-42ae-a489-04827226936b)
 
 
 > **Note:**  
