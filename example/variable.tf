@@ -31,8 +31,8 @@ variable "key_name" {
 }
 
 variable "subnet" {
-  type    = string
-  default = "subnet-045f69efd16f93d00"
+  type    = list(string)
+  default = ["subnet-045f69efd16f93d00"]
 }
 
 # variable "security_groups" {

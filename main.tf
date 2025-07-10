@@ -4,7 +4,7 @@ resource "aws_instance" "ec2" {
   ami                         = var.ami_id
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  subnet_id                   = var.subnet
+subnet_id = var.subnet[count.index]
   security_groups = var.instance_sg_id != "" ? [var.instance_sg_id] : null
   associate_public_ip_address = var.public_ip
   iam_instance_profile        = var.iam_instance_profile != "" ? var.iam_instance_profile : null
@@ -47,7 +47,7 @@ resource "aws_instance" "ec2" {
 # Get AZ for new EBS volumes
 data "aws_subnet" "selected" {
   count = var.create_ebs_volume && length(var.secondary_ebs_volumes) > 0 ? 1 : 0
-  id    = var.subnet
+ id    = var.subnet[0]
 }
 
 # Create new EBS volumes

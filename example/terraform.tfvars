@@ -5,7 +5,7 @@ existing_instance_id = "i-09460f2f0f2b8a8b2"
 ami_id          = "ami-020cba7c55df1f615"
 instance_type   = "t2.micro"
 key_name        = "terra"
-subnet          = "subnet-045f69efd16f93d00"
+subnet          = ["subnet-045f69efd16f93d00"]
 public_ip       = true
 
 iam_instance_profile    = ""

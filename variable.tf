@@ -21,9 +21,10 @@ variable "key_name" {
 }
 
 variable "subnet" {
-  type    = string
-  default = "subnet-045f69efd16f93d00"
+  description = "List of subnets for multiple EC2s"
+  type        = list(string)
 }
+
 
 # variable "security_groups" {
 #   type    = list(string)
