@@ -1,142 +1,198 @@
+################################## EC2 Instance Parameters #########################################
+
 variable "count_ec2_instance" {
-  type        = number
-  description = "Number of EC2 instances"
+  type    = number
+  default = 1
 }
 
 variable "ami_id" {
-  type        = string
-  description = "AMI ID for the EC2 instance"
+  type    = string
+  default = "ami-020cba7c55df1f615"
 }
 
 variable "instance_type" {
-  type        = string
-  description = "EC2 instance type"
+  type    = string
+  default = "t2.micro"
 }
 
 variable "key_name" {
-  type        = string
-  description = "Key pair name for SSH access"
+  type    = string
+  default = "terra"
 }
 
 variable "subnet" {
-  type        = string
-  description = "Subnet ID where the instance will be launched"
+  type    = string
+  default = "subnet-045f69efd16f93d00"
 }
 
 variable "security_groups" {
-  type        = list(string)
-  description = "List of security group IDs"
+  type    = list(string)
+  default = ["sg-0b00af69d8e23a01e"]
 }
 
 variable "public_ip" {
-  type        = bool
-  description = "Whether to associate a public IP"
+  type    = bool
+  default = true
 }
 
 variable "iam_instance_profile" {
-  type        = string
-  description = "IAM instance profile name"
-  default     = ""
+  type    = string
+  default = ""
 }
 
 variable "disable_api_termination" {
-  type        = bool
-  description = "Whether to disable API termination"
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "enable_monitoring" {
-  type        = bool
-  description = "Enable detailed monitoring"
-  default     = false
+  type    = bool
+  default = true
 }
 
 variable "ebs_optimized" {
-  type        = bool
-  description = "Enable EBS optimization"
-  default     = false
+  type    = bool
+  default = true
 }
 
 variable "user_data" {
-  type        = string
-  description = "User data script"
-  default     = ""
+  type    = string
+  default = ""
 }
 
 variable "private_ip" {
-  type        = string
-  description = "Private IP address to assign"
-  default     = null
+  type    = string
+  default = null
 }
 
+################################## Root Volume #########################################
+
 variable "volume_size" {
-  type        = number
-  description = "Size of root volume in GB"
+  type    = number
+  default = 8
 }
 
 variable "volume_type" {
-  type        = string
-  description = "Type of root volume (e.g., gp3, io1)"
+  type    = string
+  default = "gp3"
 }
 
 variable "encrypted_volume" {
-  type        = bool
-  description = "Whether the root volume should be encrypted"
+  type    = bool
+  default = true
 }
 
 variable "root_block_iops" {
-  type        = number
-  description = "IOPS for root volume (used with io1, io2, gp3)"
-  default     = null
+  type    = number
+  default = 3000
 }
 
 variable "root_block_delete_on_termination" {
-  type        = bool
-  description = "Delete root volume on termination"
-  default     = true
+  type    = bool
+  default = true
 }
 
-
+################################## Metadata #########################################
 
 variable "metadata_http_tokens" {
-  type        = string
-  description = "IMDSv2 token requirement (optional/required)"
-  default     = "required"
+  type    = string
+  default = "required"
 }
 
 variable "metadata_http_endpoint" {
-  type        = string
-  description = "Enable/disable metadata endpoint"
-  default     = "enabled"
+  type    = string
+  default = "enabled"
 }
 
 variable "metadata_tags" {
-  type        = string
-  description = "Include instance tags in metadata"
-  default     = "enabled"
+  type    = string
+  default = "enabled"
 }
 
+################################## Enclave & Maintenance #########################################
+
 variable "enable_enclave" {
-  type        = bool
-  description = "Enable Nitro enclaves"
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "auto_recovery" {
-  type        = string
-  description = "Enable or disable auto recovery"
-  default     = "default"
+  type    = string
+  default = "default"
 }
 
+################################## Conditionals #########################################
 
+variable "create_ec2_instance" {
+  type    = bool
+  default = true
+}
 
+variable "existing_instance_id" {
+  description = "Provide this when not creating EC2 but need to attach EBS to an existing instance"
+  type        = string
+  default     = "i-09460f2f0f2b8a8b2"
+}
 
-################################### Naming convention variables #########################################
+variable "create_ebs_volume" {
+  type    = bool
+  default = false
+}
+
+variable "attach_existing_ebs_volume" {
+  type    = bool
+  default = false
+}
+
+################################## Dynamic EBS Volumes #########################################
+
+variable "secondary_ebs_volumes" {
+  type = list(object({
+    device_name           = string
+    volume_size           = number
+    encrypted             = bool
+    kms_key_id            = optional(string)
+    final_snapshot        = optional(bool)
+    multi_attach_enabled  = optional(bool)
+    iops                  = optional(number)
+    throughput            = optional(number)
+    type                  = string
+    snapshot_id           = optional(string)
+    outpost_arn           = optional(string)
+    tags                  = optional(map(string), {})
+  }))
+  default = [
+    {
+      device_name = "/dev/sdf"
+      volume_size = 20
+      encrypted   = true
+      type        = "gp3"
+      tags = {
+        Purpose = "AppData"
+      }
+    }
+  ]
+}
+
+variable "secondary_existing_ebs_volumes" {
+  type = list(object({
+    device_name = string
+    volume_id   = string
+  }))
+  default = [
+    {
+      device_name = "/dev/sdg"
+      volume_id   = "vol-0c181fc4efb8832d5"
+    }
+  ]
+}
+
+################################## Naming Convention Variables #########################################
 
 variable "bu" {
   description = "Business unit name (e.g., BP, GURUKU). Max 6 characters."
   type        = string
-  default = "BP"
+  default     = "BP"
   validation {
     condition     = length(var.bu) <= 6
     error_message = "The business unit name must be less than or equal to 6 characters."
@@ -146,13 +202,13 @@ variable "bu" {
 variable "program" {
   description = "Name of the program (e.g., OT, BP)."
   type        = string
-  default = "OT"
+  default     = "OT"
 }
 
 variable "app" {
-  description = "Application name (e.g., network, shared). Max 6 characters."
+  description = "Application name (e.g., network, shared). Max 10 characters."
   type        = string
-  default = "network"
+  default     = "network"
   validation {
     condition     = length(var.app) <= 10
     error_message = "The app name must be less than or equal to 10 characters."
@@ -162,8 +218,7 @@ variable "app" {
 variable "env" {
   description = "Environment code: 'd' (dev), 'p' (prod), 'q' (qa), 's' (stage), 'g' (global)."
   type        = string
-  default = "d"
-
+  default     = "d"
   validation {
     condition     = contains(["d", "p", "q", "s", "g"], var.env)
     error_message = "env must be one of 'd', 'p', 'q', 's', 'g'."
@@ -173,11 +228,11 @@ variable "env" {
 variable "team" {
   description = "Team email responsible for the application (e.g., digitalops@gehealthcare.com)."
   type        = string
-  default = "infra"
+  default     = "infra"
 }
 
 variable "region" {
   description = "AWS region (e.g., us-east-1, ap-south-1)."
   type        = string
-  default = "us-east-1"
+  default     = "us-east-1"
 }

@@ -1,119 +1,182 @@
+variable "create_ec2_instance" {
+  description = "Toggle to create EC2 instance"
+  type        = bool
+  default     = true
+}
+
 variable "count_ec2_instance" {
-  type        = number
-  default     = 1
+  type    = number
+  default = 1
+}
+
+variable "existing_instance_id" {
+  description = "Provide this when not creating EC2 but need to attach EBS to an existing instance"
+  type        = string
+  default     = "i-09460f2f0f2b8a8b2"
 }
 
 variable "ami_id" {
-  type        = string
-  default     = "ami-020cba7c55df1f615"
+  type    = string
+  default = "ami-020cba7c55df1f615"
 }
 
 variable "instance_type" {
-  type        = string
-  default     = "t2.micro"
+  type    = string
+  default = "t2.micro"
 }
 
 variable "key_name" {
-  type        = string
-  default     = "terra"
+  type    = string
+  default = "terra"
 }
 
 variable "subnet" {
-  type        = string
-  default     = "subnet-08a2aa30dbc179a2b"
+  type    = string
+  default = "subnet-045f69efd16f93d00"
 }
 
 variable "security_groups" {
-  type        = list(string)
-  default     = ["sg-04fb2f273d8865af3"]
+  type    = list(string)
+  default = ["sg-0b00af69d8e23a01e"]
 }
 
 variable "public_ip" {
-  type        = bool
-  default     = true
+  type    = bool
+  default = true
 }
 
 variable "iam_instance_profile" {
-  type        = string
-  default     = ""
+  type    = string
+  default = ""
 }
 
 variable "disable_api_termination" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "enable_monitoring" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = true
 }
 
 variable "ebs_optimized" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = true
 }
 
 variable "user_data" {
-  type        = string
-  default     = ""
+  type    = string
+  default = ""
 }
 
 variable "private_ip" {
-  type        = string
-  default     = null
+  type    = string
+  default = null
 }
 
 variable "volume_size" {
-  type        = number
-  default     = 8
+  type    = number
+  default = 8
 }
 
 variable "volume_type" {
-  type        = string
-  default     = "gp3"
+  type    = string
+  default = "gp3"
 }
 
 variable "encrypted_volume" {
-  type        = bool
-  default     = true
+  type    = bool
+  default = true
 }
 
 variable "root_block_iops" {
-  type        = number
-  default     = 3000
+  type    = number
+  default = 3000
 }
 
 variable "root_block_delete_on_termination" {
-  type        = bool
-  default     = true
+  type    = bool
+  default = true
 }
 
 variable "metadata_http_tokens" {
-  type        = string
-  default     = "required"
+  type    = string
+  default = "required"
 }
 
 variable "metadata_http_endpoint" {
-  type        = string
-  default     = "enabled"
+  type    = string
+  default = "enabled"
 }
 
 variable "metadata_tags" {
-  type        = string
-  default     = "enabled"
+  type    = string
+  default = "enabled"
 }
 
 variable "enable_enclave" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "auto_recovery" {
-  type        = string
-  default     = "default"
+  type    = string
+  default = "default"
 }
 
-################### Naming convention variables ###################
+variable "create_ebs_volume" {
+  type    = bool
+  default = false
+}
+
+variable "attach_existing_ebs_volume" {
+  type    = bool
+  default = false
+}
+
+variable "secondary_ebs_volumes" {
+  type = list(object({
+    device_name          = string
+    volume_size          = number
+    encrypted            = bool
+    kms_key_id           = optional(string)
+    final_snapshot       = optional(bool)
+    multi_attach_enabled = optional(bool)
+    iops                 = optional(number)
+    throughput           = optional(number)
+    type                 = string
+    snapshot_id          = optional(string)
+    outpost_arn          = optional(string)
+    tags                 = optional(map(string), {})
+  }))
+  default = [
+    {
+      device_name = "/dev/sdf"
+      volume_size = 20
+      encrypted   = true
+      type        = "gp3"
+      tags = {
+        Purpose = "AppData"
+      }
+    }
+  ]
+}
+
+variable "secondary_existing_ebs_volumes" {
+  type = list(object({
+    device_name = string
+    volume_id   = string
+  }))
+  default = [
+    {
+      device_name = "/dev/sdg"
+      volume_id   = "vol-0c181fc4efb8832d5"
+    }
+  ]
+}
+
+################# Naming convention variables ###################
 
 variable "env" {
   description = "Environment short name. Must be one of: d (dev), p (prod), q (qa), s (stage), g (global)."
@@ -146,12 +209,12 @@ variable "app" {
 }
 
 variable "resource" {
-  description = "Resource name (e.g., eks, efs, ecr). Max 8 characters."
+  description = "Resource name (e.g., eks, efs, ecr). Max 15 characters."
   type        = string
-  default     = "network"
+  default     = "instance"
   validation {
-    condition     = length(var.resource) <= 8
-    error_message = "The resource name must be less than or equal to 8 characters."
+    condition     = length(var.resource) <= 15
+    error_message = "The resource name must be less than or equal to 15 characters."
   }
 }
 
@@ -166,14 +229,8 @@ variable "tenant" {
 }
 
 variable "enabled_features" {
-  type        = list(string)
-  default     = []
-}
-
-variable "create" {
-  description = "Controls if resources should be created (affects nearly all resources)"
-  type        = bool
-  default     = true
+  type    = list(string)
+  default = []
 }
 
 variable "random_alphanumeric_len" {
@@ -223,6 +280,6 @@ variable "program" {
 }
 
 variable "region" {
-  type        = string
-  default     = "us-east-1"
+  type    = string
+  default = "us-east-1"
 }
