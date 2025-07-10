@@ -21,7 +21,7 @@ module "standard_tags" {
 
 
 module "ec2_with_optional_ebs" {
-  source               = "../"
+  source               = "git@github.com:OT-CLOUD-KIT/terraform-aws-ec2-instance.git?ref=Feature"
   create_ec2_instance  = var.create_ec2_instance
   existing_instance_id = var.existing_instance_id
   count_ec2_instance   = var.count_ec2_instance
