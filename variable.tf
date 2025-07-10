@@ -25,10 +25,10 @@ variable "subnet" {
   default = "subnet-045f69efd16f93d00"
 }
 
-variable "security_groups" {
-  type    = list(string)
-  default = ["sg-0b00af69d8e23a01e"]
-}
+# variable "security_groups" {
+#   type    = list(string)
+#   default = ["sg-0b00af69d8e23a01e"]
+# }
 
 variable "public_ip" {
   type    = bool
@@ -235,4 +235,10 @@ variable "region" {
   description = "AWS region (e.g., us-east-1, ap-south-1)."
   type        = string
   default     = "us-east-1"
+}
+
+variable "instance_sg_id" {
+  type        = string
+  default     = ""
+  description = " SG IDs to attach to the EC2 instance"
 }

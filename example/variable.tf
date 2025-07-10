@@ -35,10 +35,10 @@ variable "subnet" {
   default = "subnet-045f69efd16f93d00"
 }
 
-variable "security_groups" {
-  type    = list(string)
-  default = ["sg-0b00af69d8e23a01e"]
-}
+# variable "security_groups" {
+#   type    = list(string)
+#   default = ["sg-0b00af69d8e23a01e"]
+# }
 
 variable "public_ip" {
   type    = bool
@@ -283,3 +283,58 @@ variable "region" {
   type    = string
   default = "us-east-1"
 }
+
+
+variable "enable_public_web_security_group_resource" {
+  type        = bool
+  description = "This variable is to create Web Security Group"
+  default     = true
+}
+
+
+
+variable "instance_sg_name" {
+  type = string
+  default = "dev_sg"
+}
+variable "vpc_id" {
+  type = string
+  default = ""
+}
+
+variable "existing_sg_id" {
+  type = string
+  default = ""
+}
+
+variable "security_group_ingress_rules" {
+  description = "Ingress rules for the security group"
+  type = list(object({
+    description  = string
+    from_port    = number
+    to_port      = number
+    protocol     = string
+    cidr         = list(string)
+    source_SG_ID = string
+  }))
+  default = []
+}
+
+variable "security_group_egress_rules" {
+  description = "Egress rules for the security group"
+  type = list(object({
+    description  = string
+    from_port    = number
+    to_port      = number
+    protocol     = string
+    cidr         = list(string)
+    source_SG_ID = string
+  }))
+  default = []
+}
+
+# variable "instance_sg_ids" {
+#   type        = list(string)
+#   description = "List of security group IDs to attach to the EC2 instance"
+#   default     = []
+# }

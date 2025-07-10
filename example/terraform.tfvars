@@ -6,7 +6,6 @@ ami_id          = "ami-020cba7c55df1f615"
 instance_type   = "t2.micro"
 key_name        = "terra"
 subnet          = "subnet-045f69efd16f93d00"
-security_groups = ["sg-0b00af69d8e23a01e"]
 public_ip       = true
 
 iam_instance_profile    = ""
@@ -52,6 +51,8 @@ secondary_existing_ebs_volumes = [
   }
 ]
 
+
+
 ################# Naming Convension #####################
 
 random_alphanumeric_len = 4
@@ -70,4 +71,9 @@ gen_no_of_names = 1
 
 team    = "infra"
 program = "ot"
+
+
+enable_public_web_security_group_resource = true
+vpc_id ="vpc-0584bf21acbf558a1"
+existing_sg_id = ""
 

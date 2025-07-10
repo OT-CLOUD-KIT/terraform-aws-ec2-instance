@@ -5,7 +5,7 @@ resource "aws_instance" "ec2" {
   instance_type               = var.instance_type
   key_name                    = var.key_name
   subnet_id                   = var.subnet
-  vpc_security_group_ids      = var.security_groups
+  security_groups = var.instance_sg_id != "" ? [var.instance_sg_id] : null
   associate_public_ip_address = var.public_ip
   iam_instance_profile        = var.iam_instance_profile != "" ? var.iam_instance_profile : null
   disable_api_termination     = var.disable_api_termination

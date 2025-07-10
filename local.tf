@@ -16,3 +16,4 @@ locals {
 locals {
   selected_instance_id = var.create_ec2_instance ? aws_instance.ec2[0].id : var.existing_instance_id
 }
+
