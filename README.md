@@ -62,6 +62,17 @@ module "ec2_instance" {
 }
 ```
 
+## Resource
+
+| Name                                                                                                                              | Type        |
+| --------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| [aws\_instance.ec2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance)                         | resource    |
+| [data.aws\_subnet.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet)                | data source |
+| [aws\_ebs\_volume.new](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume)                    | resource    |
+| [aws\_volume\_attachment.new](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment)      | resource    |
+| [aws\_volume\_attachment.existing](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment) | resource    |
+
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
