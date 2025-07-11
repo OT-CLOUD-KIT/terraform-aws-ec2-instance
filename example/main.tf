@@ -20,7 +20,7 @@ module "standard_tags" {
 
 
 module "ec2_with_optional_ebs" {
-  source               = "../"
+  source               = "git@github.com:OT-CLOUD-KIT/terraform-aws-ec2-instance.git?ref=Feature"
   
   create_ec2_instance  = var.create_ec2_instance
   existing_instance_id = var.existing_instance_id
@@ -63,7 +63,6 @@ module "ec2_with_optional_ebs" {
   secondary_existing_ebs_volumes = var.secondary_existing_ebs_volumes
 
 
-  # instance_sg_id =  module.instance_security_group[0].sg_id
   instance_sg_id = var.existing_sg_id != "" ? var.existing_sg_id : (
     var.enable_public_web_security_group_resource ? module.instance_security_group[0].sg_id : ""
   )
@@ -100,4 +99,6 @@ module "instance_security_group" {
       ]
     }
   }
+
+  
 }

@@ -35,10 +35,6 @@ variable "subnet" {
   default = ["subnet-045f69efd16f93d00"]
 }
 
-# variable "security_groups" {
-#   type    = list(string)
-#   default = ["sg-0b00af69d8e23a01e"]
-# }
 
 variable "public_ip" {
   type    = bool
@@ -333,8 +329,3 @@ variable "security_group_egress_rules" {
   default = []
 }
 
-# variable "instance_sg_ids" {
-#   type        = list(string)
-#   description = "List of security group IDs to attach to the EC2 instance"
-#   default     = []
-# }

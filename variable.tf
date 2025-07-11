@@ -26,11 +26,6 @@ variable "subnet" {
 }
 
 
-# variable "security_groups" {
-#   type    = list(string)
-#   default = ["sg-0b00af69d8e23a01e"]
-# }
-
 variable "public_ip" {
   type    = bool
   default = true
