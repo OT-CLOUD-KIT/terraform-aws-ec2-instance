@@ -185,56 +185,71 @@ variable "secondary_existing_ebs_volumes" {
 
 ################################## Naming Convention Variables #########################################
 
-variable "bu" {
-  description = "Business unit name (e.g., BP, GURUKU). Max 6 characters."
-  type        = string
-  default     = "BP"
-  validation {
-    condition     = length(var.bu) <= 6
-    error_message = "The business unit name must be less than or equal to 6 characters."
-  }
-}
-
-variable "program" {
-  description = "Name of the program (e.g., OT, BP)."
-  type        = string
-  default     = "OT"
-}
-
-variable "app" {
-  description = "Application name (e.g., network, shared). Max 10 characters."
-  type        = string
-  default     = "network"
-  validation {
-    condition     = length(var.app) <= 10
-    error_message = "The app name must be less than or equal to 10 characters."
-  }
-}
-
-variable "env" {
-  description = "Environment code: 'd' (dev), 'p' (prod), 'q' (qa), 's' (stage), 'g' (global)."
-  type        = string
-  default     = "d"
-  validation {
-    condition     = contains(["d", "p", "q", "s", "g"], var.env)
-    error_message = "env must be one of 'd', 'p', 'q', 's', 'g'."
-  }
-}
-
-variable "team" {
-  description = "Team email responsible for the application (e.g., digitalops@gehealthcare.com)."
-  type        = string
-  default     = "infra"
-}
-
-variable "region" {
-  description = "AWS region (e.g., us-east-1, ap-south-1)."
-  type        = string
-  default     = "us-east-1"
-}
 
 variable "instance_sg_id" {
   type        = string
   default     = ""
   description = " SG IDs to attach to the EC2 instance"
+}
+
+
+######################## key pair  ##################3333
+
+variable "create_key_pair" {
+  description = "Whether to create the EC2 key pair"
+  type        = bool
+  default     = true
+}
+
+variable "create_private_key" {
+  description = "Whether to generate a private key (if false, public key must be provided)"
+  type        = bool
+  default     = true
+}
+
+variable "key_pair_name" {
+  description = "Name of the EC2 key pair"
+  type        = string
+  default     = "ot-key"
+}
+
+variable "public_key_path" {
+  description = "Path to an existing public key file (used if create_private_key = false)"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}
+
+variable "private_key_algorithm" {
+  description = "Algorithm for private key generation"
+  type        = string
+  default     = "RSA"
+}
+
+variable "private_key_rsa_bits" {
+  description = "Bit size of RSA key"
+  type        = number
+  default     = 4096
+}
+
+variable "key_output_dir" {
+  description = "Directory to write the generated private key"
+  type        = string
+  default     = "./keys"
+}
+
+variable "owner" {
+  type = string
+  default = ""
+  
+}
+
+
+variable "env" {
+  type = string
+  default = "dev"
+}
+
+variable "app" {
+  type = string
+  default = "otcloud kit"
 }

@@ -1,9 +1,8 @@
 resource "aws_instance" "ec2" {
     count                       = var.create_ec2_instance ? var.count_ec2_instance : 0
-
   ami                         = var.ami_id
   instance_type               = var.instance_type
-  key_name                    = var.key_name
+  key_name = var.create_key_pair ? aws_key_pair.key_pair[0].key_name : var.key_name
 subnet_id = var.subnet[count.index]
   security_groups = var.instance_sg_id != "" ? [var.instance_sg_id] : null
   associate_public_ip_address = var.public_ip
@@ -92,4 +91,39 @@ resource "aws_volume_attachment" "existing" {
   instance_id = local.selected_instance_id
 
   depends_on = [aws_instance.ec2]
+}
+
+
+################## key pair ######################
+
+######################################
+# EC2 Key Pair (Generate and Save)
+######################################
+
+resource "tls_private_key" "ec2_key" {
+  count     = var.create_key_pair && var.create_private_key ? 1 : 0
+  algorithm = var.private_key_algorithm
+  rsa_bits  = var.private_key_rsa_bits
+}
+
+resource "aws_key_pair" "key_pair" {
+  count      = var.create_key_pair ? 1 : 0
+  key_name   = var.key_pair_name
+  public_key = var.create_private_key ? tls_private_key.ec2_key[0].public_key_openssh : file(var.public_key_path)
+
+  tags = merge(
+    {
+      Name = "${local.base_name}-key"
+    },
+    local.common_tags
+  )
+}
+
+resource "local_file" "private_key" {
+  count           = var.create_key_pair && var.create_private_key ? 1 : 0
+  content         = tls_private_key.ec2_key[0].private_key_pem
+  filename        = "${var.key_output_dir}/${var.key_pair_name}.pem"
+  file_permission = "0400"
+
+  depends_on = [aws_key_pair.key_pair]
 }

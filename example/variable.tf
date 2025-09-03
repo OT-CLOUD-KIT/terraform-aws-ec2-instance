@@ -1,3 +1,6 @@
+############################################################
+# EC2 Instance Configuration
+############################################################
 variable "create_ec2_instance" {
   description = "Toggle to create EC2 instance"
   type        = bool
@@ -5,133 +8,136 @@ variable "create_ec2_instance" {
 }
 
 variable "count_ec2_instance" {
-  type    = number
-  default = 1
+  description = "Number of EC2 instances to create"
+  type        = number
+  default     = 1
 }
 
 variable "existing_instance_id" {
   description = "Provide this when not creating EC2 but need to attach EBS to an existing instance"
   type        = string
-  default     = "i-09460f2f0f2b8a8b2"
+  default     = ""
 }
 
 variable "ami_id" {
-  type    = string
-  default = "ami-020cba7c55df1f615"
+  description = "AMI ID for EC2 instance"
+  type        = string
+  default     = "ami-020cba7c55df1f615"
 }
 
 variable "instance_type" {
-  type    = string
-  default = "t2.micro"
-}
-
-variable "key_name" {
-  type    = string
-  default = "terra"
-}
-
-variable "subnet" {
-  type    = list(string)
-  default = ["subnet-045f69efd16f93d00"]
-}
-
-
-variable "public_ip" {
-  type    = bool
-  default = true
-}
-
-variable "iam_instance_profile" {
-  type    = string
-  default = ""
-}
-
-variable "disable_api_termination" {
-  type    = bool
-  default = false
-}
-
-variable "enable_monitoring" {
-  type    = bool
-  default = true
-}
-
-variable "ebs_optimized" {
-  type    = bool
-  default = true
-}
-
-variable "user_data" {
-  type    = string
-  default = ""
+  description = "EC2 instance type"
+  type        = string
+  default     = "t2.micro"
 }
 
 variable "private_ip" {
-  type    = string
-  default = null
+  description = "Private IP address for EC2 instance"
+  type        = string
+  default     = null
 }
 
+variable "public_ip" {
+  description = "Whether to assign a public IP"
+  type        = bool
+  default     = true
+}
+
+variable "iam_instance_profile" {
+  description = "IAM instance profile for EC2"
+  type        = string
+  default     = ""
+}
+
+variable "disable_api_termination" {
+  description = "Prevent accidental termination of the instance"
+  type        = bool
+  default     = false
+}
+
+variable "enable_monitoring" {
+  description = "Enable detailed CloudWatch monitoring"
+  type        = bool
+  default     = true
+}
+
+variable "ebs_optimized" {
+  description = "Enable EBS optimized instance"
+  type        = bool
+  default     = true
+}
+
+variable "user_data" {
+  description = "User data script for EC2 instance"
+  type        = string
+  default     = ""
+}
+
+############################################################
+# Networking
+############################################################
+variable "subnet" {
+  description = "List of subnet IDs where EC2 will be launched"
+  type        = list(string)
+  default     = []
+}
+
+variable "vpc_id" {
+  description = "VPC ID where EC2 is launched"
+  type        = string
+  default     = ""
+}
+
+############################################################
+# Storage - Root Volume
+############################################################
 variable "volume_size" {
-  type    = number
-  default = 8
+  description = "Root volume size in GB"
+  type        = number
+  default     = 8
 }
 
 variable "volume_type" {
-  type    = string
-  default = "gp3"
+  description = "Root volume type (gp3, io1, etc.)"
+  type        = string
+  default     = "gp3"
 }
 
 variable "encrypted_volume" {
-  type    = bool
-  default = true
+  description = "Whether to encrypt the root volume"
+  type        = bool
+  default     = true
 }
 
 variable "root_block_iops" {
-  type    = number
-  default = 3000
+  description = "IOPS for root block volume (gp3/io1/io2)"
+  type        = number
+  default     = 3000
 }
 
 variable "root_block_delete_on_termination" {
-  type    = bool
-  default = true
+  description = "Delete root volume on termination"
+  type        = bool
+  default     = true
 }
 
-variable "metadata_http_tokens" {
-  type    = string
-  default = "required"
-}
-
-variable "metadata_http_endpoint" {
-  type    = string
-  default = "enabled"
-}
-
-variable "metadata_tags" {
-  type    = string
-  default = "enabled"
-}
-
-variable "enable_enclave" {
-  type    = bool
-  default = false
-}
-
-variable "auto_recovery" {
-  type    = string
-  default = "default"
-}
-
+############################################################
+# Storage - Additional EBS Volumes
+############################################################
 variable "create_ebs_volume" {
-  type    = bool
-  default = false
+  description = "Whether to create an additional EBS volume"
+  type        = bool
+  default     = false
 }
 
 variable "attach_existing_ebs_volume" {
-  type    = bool
-  default = false
+  description = "Whether to attach an existing EBS volume"
+  type        = bool
+  default     = false
 }
 
 variable "secondary_ebs_volumes" {
+  description = "List of secondary EBS volumes to create"
   type = list(object({
     device_name          = string
     volume_size          = number
@@ -146,186 +152,180 @@ variable "secondary_ebs_volumes" {
     outpost_arn          = optional(string)
     tags                 = optional(map(string), {})
   }))
-  default = [
-    {
-      device_name = "/dev/sdf"
-      volume_size = 20
-      encrypted   = true
-      type        = "gp3"
-      tags = {
-        Purpose = "AppData"
-      }
-    }
-  ]
+  default = []
 }
 
 variable "secondary_existing_ebs_volumes" {
+  description = "List of existing secondary EBS volumes to attach"
   type = list(object({
     device_name = string
     volume_id   = string
   }))
-  default = [
-    {
-      device_name = "/dev/sdg"
-      volume_id   = "vol-0c181fc4efb8832d5"
-    }
-  ]
-}
-
-################# Naming convention variables ###################
-
-variable "env" {
-  description = "Environment short name. Must be one of: d (dev), p (prod), q (qa), s (stage), g (global)."
-  type        = string
-  default     = "d"
-  validation {
-    condition     = contains(["d", "p", "q", "s", "g"], var.env)
-    error_message = "env must be one of 'd', 'p', 'q', 's', 'g'."
-  }
-}
-
-variable "bu" {
-  description = "Business unit name (e.g., pcs, ultrasound). Max 5 characters."
-  type        = string
-  default     = "ot"
-  validation {
-    condition     = length(var.bu) <= 5
-    error_message = "The business unit name must be less than or equal to 5 characters."
-  }
-}
-
-variable "app" {
-  description = "Application name (e.g., network, shared). Max 6 characters."
-  type        = string
-  default     = "bp"
-  validation {
-    condition     = length(var.app) <= 6
-    error_message = "The app name must be less than or equal to 6 characters."
-  }
-}
-
-variable "resource" {
-  description = "Resource name (e.g., eks, efs, ecr). Max 15 characters."
-  type        = string
-  default     = "instance"
-  validation {
-    condition     = length(var.resource) <= 15
-    error_message = "The resource name must be less than or equal to 15 characters."
-  }
-}
-
-variable "tenant" {
-  description = "Tenant name (e.g., app1, app2). Max 6 characters."
-  type        = string
-  default     = ""
-  validation {
-    condition     = length(var.tenant) <= 6
-    error_message = "The tenant name must be less than or equal to 6 characters."
-  }
-}
-
-variable "enabled_features" {
-  type    = list(string)
   default = []
 }
 
-variable "random_alphanumeric_len" {
-  description = "The length of random alphanumeric string desired. Min: 1, Max: 4."
-  type        = number
-  default     = 4
-  validation {
-    condition     = var.random_alphanumeric_len >= 1 && var.random_alphanumeric_len <= 4
-    error_message = "The length must be between 1 and 4."
-  }
+############################################################
+# Metadata / Advanced Settings
+############################################################
+variable "metadata_http_tokens" {
+  description = "Whether to require IMDSv2 tokens"
+  type        = string
+  default     = "required"
 }
 
-variable "special" {
-  description = "Include special characters like !@#$%&*()-_=+[]{}<>:? in the generated name."
+variable "metadata_http_endpoint" {
+  description = "Whether metadata service is enabled"
+  type        = string
+  default     = "enabled"
+}
+
+variable "metadata_tags" {
+  description = "Whether metadata tags are enabled"
+  type        = string
+  default     = "enabled"
+}
+
+variable "enable_enclave" {
+  description = "Enable Nitro enclave support"
   type        = bool
   default     = false
 }
 
-variable "upper" {
-  description = "Include uppercase characters in the generated name."
-  type        = bool
-  default     = false
+variable "auto_recovery" {
+  description = "Enable EC2 instance auto-recovery"
+  type        = string
+  default     = "default"
 }
 
-variable "number" {
-  description = "Include numbers in the generated name."
+############################################################
+# Security Groups
+############################################################
+variable "enable_ec2_sg" {
+  description = "Enable or disable creation of EC2 security group"
   type        = bool
   default     = true
-}
-
-variable "gen_no_of_names" {
-  description = "Number of names to generate."
-  type        = number
-  default     = 1
-}
-
-variable "team" {
-  description = "The email address of the team who owns the application, ex:digitalops@gehealthcare.com"
-  type        = string
-  default     = "infra"
-}
-
-variable "program" {
-  description = "Name of the Program, For ex: OT, BP etc."
-  type        = string
-  default     = "ot"
-}
-
-variable "region" {
-  type    = string
-  default = "us-east-1"
-}
-
-
-variable "enable_public_web_security_group_resource" {
-  type        = bool
-  description = "This variable is to create Web Security Group"
-  default     = true
-}
-
-
-
-variable "instance_sg_name" {
-  type = string
-  default = "dev_sg"
-}
-variable "vpc_id" {
-  type = string
-  default = ""
 }
 
 variable "existing_sg_id" {
-  type = string
-  default = ""
+  description = "Existing security group ID (if not creating new one)"
+  type        = string
+  default     = ""
 }
 
-variable "security_group_ingress_rules" {
-  description = "Ingress rules for the security group"
+variable "ec2_ingress_rules" {
+  description = "Ingress rules for the EC2 security group"
   type = list(object({
     description  = string
     from_port    = number
     to_port      = number
     protocol     = string
-    cidr         = list(string)
-    source_SG_ID = string
+    cidr         = optional(list(string))
+    ipv6_cidr    = optional(list(string))
+    source_SG_ID = optional(string)
   }))
   default = []
 }
 
-variable "security_group_egress_rules" {
-  description = "Egress rules for the security group"
+variable "ec2_egress_rules" {
+  description = "Egress rules for the EC2 security group"
   type = list(object({
     description  = string
     from_port    = number
     to_port      = number
     protocol     = string
-    cidr         = list(string)
-    source_SG_ID = string
+    cidr         = optional(list(string))
+    ipv6_cidr    = optional(list(string))
+    source_SG_ID = optional(string)
   }))
   default = []
 }
 
+############################################################
+# Key Pair Management
+############################################################
+variable "key_name" {
+  description = "Existing key pair name (if using existing)"
+  type        = string
+  default     = ""
+}
+
+variable "create_key_pair" {
+  description = "Whether to create a new key pair"
+  type        = bool
+  default     = false
+}
+
+variable "create_private_key" {
+  description = "Whether to generate a TLS private key"
+  type        = bool
+  default     = false
+}
+
+variable "key_pair_name" {
+  description = "Name of the key pair (if creating new one)"
+  type        = string
+  default     = "default-key"
+}
+
+variable "private_key_algorithm" {
+  description = "Algorithm for TLS private key"
+  type        = string
+  default     = "RSA"
+}
+
+variable "private_key_rsa_bits" {
+  description = "RSA key bits"
+  type        = number
+  default     = 4096
+}
+
+variable "public_key_path" {
+  description = "Path to public key (if not generating key)"
+  type        = string
+  default     = ""
+}
+
+variable "key_output_dir" {
+  description = "Directory to save generated keys"
+  type        = string
+  default     = "./keys"
+}
+
+############################################################
+# Naming / Tagging
+############################################################
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "app" {
+  description = "Application name"
+  type        = string
+  default     = ""
+}
+
+variable "env" {
+  description = "Environment name"
+  type        = string
+  default     = ""
+}
+
+variable "owner" {
+  description = "Owner tag"
+  type        = string
+  default     = ""
+}
+
+variable "tags" {
+  description = "Additional tags"
+  type        = map(string)
+  default     = {}
+}
+
+variable "provisioner" {
+  description = "Provisioner name"
+  type        = string
+  default     = "terraform"
+}
