@@ -1,8 +1,24 @@
-output "instance_id" {
-  value = aws_instance.ec2.id
+output "instance_ids" {
+  description = "EC2 instance IDs"
+  value = {
+    for k, v in aws_instance.ec2 :
+    k => v.id
+  }
 }
 
-output "private_ip" {
-  description = "List of private IP addresses assigned to the instances"
-  value       = aws_instance.ec2.private_ip
+output "instance_arns" {
+  description = "ARNs of EC2 instances"
+  value = {
+    for k, v in aws_instance.ec2 :
+    k => v.arn
+  }
 }
+
+output "elastic_ips" {
+  description = "Elastic IPs (if enabled)"
+  value = {
+    for k, v in aws_eip.eip :
+    k => v.public_ip
+  }
+}
+
