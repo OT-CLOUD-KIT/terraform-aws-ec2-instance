@@ -1,53 +1,48 @@
-variable "name" {
-  description = "Name of bastion"
-  type        = string
-  default     = ""
-}
-variable "public_ip" {
-  description = "Name of bastion"
-  type        = bool
-  default     = true
-}
-
-variable "tags" {
-  description = "Additional tags"
-  type        = map(string)
-  default     = {}
-}
-variable "subnet" {
-  description = "Zones to launch our instances into"
-  type        = string
-  default     = ""
-}
-variable "volume_size" {
-  description = "volume size"
-  type        = number
+variable "ec2_instances" {
+  type = map(object({
+    ami_id                 = string
+    instance_type          = string
+    subnet_id              = string
+    security_groups        = list(string)
+    public_ip              = bool
+    key_name               = string
+    volume_size            = number
+    volume_type            = string
+    throughput             = number
+    encrypted_volume       = bool
+    delete_on_termination  = bool
+    enable_eip             = bool
+    termination_protection = bool
+    iam_instance_profile   = optional(string)
+    tags                   = map(string)
+  }))
 }
 
-variable "volume_type" {
-  description = "volume type"
-  type        = string
-  default     = "gp2"
-}
-
-variable "ami_id" {
-  description = "Name of Launch configuration"
-  type        = string
-  default     = ""
-}
-variable "key_name" {
-  description = "Key name of Launch configuration"
-  type        = string
-  default     = ""
-}
-variable "instance_type" {
-  description = "Name of Launch configuration"
-  type        = string
-  default     = ""
-}
 variable "security_groups" {
-  description = "Name of Launch configuration"
+  description = "List of security groups to create"
   type        = list(string)
-  default     = []
 }
 
+variable "vpc_id" {
+  type = string
+  description = "VPC ID for security groups"
+}
+
+variable "route_table_names" {
+  type = list(string)
+}
+
+variable "firewall_instance_key" {
+  description = "Key name of firewall EC2 instance"
+  type        = string
+}
+
+variable "security_group_ports" {
+  description = "Ingress port configuration mapped to SG name patterns"
+  type = map(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    name_regex  = string
+  }))
+}
